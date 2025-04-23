@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Diagnostics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
-public class PlaneGame : MonoBehaviour
+public class PlaneGame1 : MonoBehaviour
 {
     public MoveWay movement;
 
     private bool isWobbling = false;
     private Quaternion originalRotation;
     private int touchCount = 0;
-    public bool inGround = false;
 
     //GAMEOBJECTS de particulas
     public GameObject ptc_smoke;
@@ -32,24 +30,11 @@ public class PlaneGame : MonoBehaviour
             movement = GetComponent<MoveWay>();
     }
 
-    private void Update()
-    {
-        if (transform.position.y == 0.0f)
-        {
-            if (!inGround)
-            {
-                StartCoroutine(ExplosionRutine());
-                StartCoroutine(DissolveRutine());
-                inGround = true;
-            }
-        }
-    }
-
     void OnMouseDown()
     {
-        touchCount++;
+       touchCount++;
 
-        if (!isWobbling)
+       if (!isWobbling)
         {
             StartCoroutine(WobbleAndSpeedUp());
         }
@@ -59,6 +44,8 @@ public class PlaneGame : MonoBehaviour
             movement.speed = 30.0f;
             movement.falling = true;
             ptc_smoke.SetActive(false);
+            StartCoroutine(ExplosionRutine());
+            StartCoroutine(DissolveRutine());
         }
     }
 
@@ -69,7 +56,7 @@ public class PlaneGame : MonoBehaviour
 
         float t = 0f;
 
-        while (t < 50.0f / movement.speed)
+        while (t < 50.0f/movement.speed)
         {
             float angle = Mathf.Sin(Time.time * 20f) * 30f;
             transform.localRotation = originalRotation * Quaternion.Euler(0f, angle, 0f);
@@ -88,32 +75,28 @@ public class PlaneGame : MonoBehaviour
         isWobbling = false;
     }
 
-    IEnumerator ExplosionRutine()
-    {
+    IEnumerator ExplosionRutine(){
         float t = 0;
         ptc_exp.SetActive(true);
-        while (t < explosionDuration)
-        {
-            t += Time.deltaTime;
+        while(t<explosionDuration){
+            t+= Time.deltaTime;
             yield return null;
         }
         ptc_exp.SetActive(false);
     }
 
-    IEnumerator DissolveRutine()
-    {
+    IEnumerator DissolveRutine(){
         float t = 0;
         float phase;
         Material matediss = GetComponent<Renderer>().material;
         Color disscolor;
 
-        while (t < dissolveDuration)
-        {
-            t += Time.deltaTime;
-            phase = Mathf.Lerp(0, 1, t / dissolveDuration);
-
-            matediss.SetFloat("_DissolveStrength", phase);
-            disscolor = Color.Lerp(dissolveStartColor, dissolveEndColor, phase);
+        while(t<dissolveDuration){
+            t+= Time.deltaTime;
+            phase = Mathf.Lerp(0,1,t/dissolveDuration);
+            
+            matediss.SetFloat("_DissolveStrength",phase);
+            disscolor = Color.Lerp(dissolveStartColor,dissolveEndColor,phase);
             matediss.SetColor("_Color", disscolor);
 
             yield return null;

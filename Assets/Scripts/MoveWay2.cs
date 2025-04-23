@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class MoveWay : MonoBehaviour
+public class MoveWay2 : MonoBehaviour
 {
     public WayCreator[] pathFollow;
     public int currentWayPointID;
     public float rotSpeed;
     public float speed;
     public bool falling=false;
-    public bool actExplosion=false;
-    public bool endJourney = false;
     public float reachDistance=0.1f;
 
     public int way=0;
@@ -39,7 +37,7 @@ public class MoveWay : MonoBehaviour
         float distance = Vector3.Distance(pathFollow[way].path_objs[currentWayPointID].position, transform.position);
         var Rotation = Quaternion.LookRotation((pathFollow[way].path_objs[currentWayPointID].position - transform.position).normalized);
 
-        if (!falling && endJourney == false)
+        if (!falling)
         {
             transform.position = Vector3.MoveTowards(transform.position, pathFollow[way].path_objs[currentWayPointID].position, Time.deltaTime * speed);
             transform.rotation = Quaternion.Slerp(transform.rotation, Rotation * Quaternion.Euler(-90, 0, 0), Time.deltaTime * rotSpeed);
@@ -63,21 +61,15 @@ public class MoveWay : MonoBehaviour
 
         if (falling)
         {
-            currentWayPointID = pathFollow[way].path_objs.Count - 1;
+            currentWayPointID = pathFollow[way].path_objs.Count-1;
             pathFollow[way].offsetsApplied = true;
             Vector3 currentpos = transform.position;
             currentpos.y = 0.0f;
             transform.position = Vector3.MoveTowards(transform.position, currentpos, Time.deltaTime * speed);
             var Fall = transform.rotation;
-            Fall.x = 0.0f;
-            rotSpeed = 1.0f;
+            Fall.y = 0.0f;
+            rotSpeed = 30.0f;
             transform.rotation = Quaternion.Slerp(transform.rotation, Fall, Time.deltaTime * rotSpeed);
-            endJourney = true;
         }
-
-        if (transform.position.y == 0 && endJourney == true) 
-        {
-            actExplosion = true;            
-        }        
     }
 }
