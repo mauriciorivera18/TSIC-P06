@@ -39,7 +39,7 @@ public class MoveWay : MonoBehaviour
         float distance = Vector3.Distance(pathFollow[way].path_objs[currentWayPointID].position, transform.position);
         var Rotation = Quaternion.LookRotation((pathFollow[way].path_objs[currentWayPointID].position - transform.position).normalized);
 
-        if (!falling && endJourney == false)
+        if (!falling)
         {
             transform.position = Vector3.MoveTowards(transform.position, pathFollow[way].path_objs[currentWayPointID].position, Time.deltaTime * speed);
             transform.rotation = Quaternion.Slerp(transform.rotation, Rotation * Quaternion.Euler(-90, 0, 0), Time.deltaTime * rotSpeed);
@@ -65,13 +65,13 @@ public class MoveWay : MonoBehaviour
         {
             currentWayPointID = pathFollow[way].path_objs.Count - 1;
             pathFollow[way].offsetsApplied = true;
+            Quaternion Fall = transform.rotation;
+            Fall.x = 0.0f;
             Vector3 currentpos = transform.position;
             currentpos.y = 0.0f;
+
+            transform.rotation = Quaternion.Slerp(transform.rotation, Fall,rotSpeed*Time.deltaTime);
             transform.position = Vector3.MoveTowards(transform.position, currentpos, Time.deltaTime * speed);
-            var Fall = transform.rotation;
-            Fall.x = 0.0f;
-            rotSpeed = 1.0f;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Fall, Time.deltaTime * rotSpeed);
             endJourney = true;
         }
 

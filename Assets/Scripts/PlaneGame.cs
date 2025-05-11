@@ -49,14 +49,14 @@ public class PlaneGame : MonoBehaviour
     {
         touchCount++;
 
-        if (!isWobbling)
+        if (!isWobbling && touchCount<3)
         {
             StartCoroutine(WobbleAndSpeedUp());
         }
 
         if (touchCount == 3)
         {
-            movement.speed = 30.0f;
+            movement.speed = 80.0f;
             movement.falling = true;
             ptc_smoke.SetActive(false);
         }
@@ -71,7 +71,7 @@ public class PlaneGame : MonoBehaviour
 
         while (t < 50.0f / movement.speed)
         {
-            float angle = Mathf.Sin(Time.time * 20f) * 30f;
+            float angle = Mathf.Sin(Time.time * 20f) * movement.speed/3;
             transform.localRotation = originalRotation * Quaternion.Euler(0f, angle, 0f);
             t += Time.deltaTime;
             yield return null;
