@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ControllerPlane : MonoBehaviour
@@ -10,7 +11,9 @@ public class ControllerPlane : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Instantiate(bomb, positionBomb.position, Quaternion.identity);
+            GameObject inst=Instantiate(bomb, positionBomb.position, Quaternion.identity);
+            Rigidbody rb = inst.GetComponent<Rigidbody>();
+            rb.AddForce(Vector3.down * 10000f, ForceMode.Acceleration);
         }
 
         if(Input.GetKeyDown(KeyCode.A))
