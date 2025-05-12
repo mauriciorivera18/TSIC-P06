@@ -65,13 +65,14 @@ public class MoveWay : MonoBehaviour
         {
             currentWayPointID = pathFollow[way].path_objs.Count - 1;
             pathFollow[way].offsetsApplied = true;
-            Quaternion Fall = transform.rotation;
-            Fall.x = 0.0f;
             Vector3 currentpos = transform.position;
             currentpos.y = 0.0f;
+            var Fall = Quaternion.LookRotation((currentpos - transform.position).normalized);
 
-            transform.rotation = Quaternion.Slerp(transform.rotation, Fall,rotSpeed*Time.deltaTime);
+            rotSpeed = 10.0f;
             transform.position = Vector3.MoveTowards(transform.position, currentpos, Time.deltaTime * speed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Fall * Quaternion.Euler(-90, 0, 0), rotSpeed * Time.deltaTime);
+
             endJourney = true;
         }
 
