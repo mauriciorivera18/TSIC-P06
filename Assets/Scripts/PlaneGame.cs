@@ -48,7 +48,7 @@ public class PlaneGame : MonoBehaviour
 
     void OnMouseDown()
     {
-        ptc_black_smoke.SetActive(true);
+        
         touchCount++;
 
         if (!isWobbling && touchCount<3)
@@ -62,10 +62,13 @@ public class PlaneGame : MonoBehaviour
             movement.falling = true;
             StartCoroutine(DissolveRutine());
         }
+        
+
     }
 
     IEnumerator WobbleAndSpeedUp()
     {
+        ptc_black_smoke.SetActive(true);
         isWobbling = true;
         movement.speed *= 2.0f;
 
@@ -88,6 +91,7 @@ public class PlaneGame : MonoBehaviour
             yield return null;
         }
         isWobbling = false;
+        ptc_black_smoke.SetActive(false);
     }
 
     IEnumerator ExplosionRutine()
@@ -100,10 +104,12 @@ public class PlaneGame : MonoBehaviour
             yield return null;
         }
         ptc_exp.SetActive(false);
+        ptc_smoke.SetActive(false);
     }
 
     IEnumerator DissolveRutine()
     {
+        ptc_black_smoke.SetActive(true);
         float t = 0;
         float phase;
         Material matediss = GetComponent<Renderer>().material;
@@ -125,5 +131,6 @@ public class PlaneGame : MonoBehaviour
 
             yield return null;
         }
+        ptc_black_smoke.SetActive(false);
     }
 }
