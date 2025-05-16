@@ -27,7 +27,8 @@ public class MoveWay1 : MonoBehaviour
     {
         float distance=Vector3.Distance(pathFollow[way].path_objs[currentWayPointID].position,transform.position);
         transform.position=Vector3.MoveTowards (transform.position,pathFollow[way].path_objs[currentWayPointID].position,Time.deltaTime*speed);
-        if(distance<=reachDistance)
+        transform.rotation=Quaternion.RotateTowards(transform.rotation, pathFollow[way].path_objs[currentWayPointID].rotation, Time.deltaTime * speed);
+        if (distance<=reachDistance)
         {
             currentWayPointID=1;
         }
@@ -35,7 +36,7 @@ public class MoveWay1 : MonoBehaviour
         if (planeStatus.falling)
         {
             currentWayPointID = 2;
-            //speed = 40.0f;
+            speed = 90.0f;
         }
     }
 }

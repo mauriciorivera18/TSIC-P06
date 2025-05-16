@@ -16,6 +16,8 @@ public class PlaneGame : MonoBehaviour
     //GAMEOBJECTS de particulas
     public GameObject ptc_smoke;
     public GameObject ptc_exp;
+    public GameObject ptc_black_smoke;
+    public GameObject prop;
 
     //Colores para el Dissolve
     public Color dissolveStartColor;
@@ -39,7 +41,6 @@ public class PlaneGame : MonoBehaviour
             if (!inGround)
             {
                 StartCoroutine(ExplosionRutine());
-                StartCoroutine(DissolveRutine());
                 inGround = true;
             }
         }
@@ -47,23 +48,27 @@ public class PlaneGame : MonoBehaviour
 
     void OnMouseDown()
     {
+        
         touchCount++;
 
-        if (!isWobbling)
+        if (!isWobbling && touchCount<3)
         {
             StartCoroutine(WobbleAndSpeedUp());
         }
 
         if (touchCount == 3)
         {
-            movement.speed = 30.0f;
+            movement.speed = 80.0f;
             movement.falling = true;
-            ptc_smoke.SetActive(false);
+            StartCoroutine(DissolveRutine());
         }
+        
+
     }
 
     IEnumerator WobbleAndSpeedUp()
     {
+        ptc_black_smoke.SetActive(true);
         isWobbling = true;
         movement.speed *= 2.0f;
 
@@ -71,7 +76,7 @@ public class PlaneGame : MonoBehaviour
 
         while (t < 50.0f / movement.speed)
         {
-            float angle = Mathf.Sin(Time.time * 20f) * 30f;
+            float angle = Mathf.Sin(Time.time * 20f) * movement.speed/5;
             transform.localRotation = originalRotation * Quaternion.Euler(0f, angle, 0f);
             t += Time.deltaTime;
             yield return null;
@@ -86,6 +91,7 @@ public class PlaneGame : MonoBehaviour
             yield return null;
         }
         isWobbling = false;
+        ptc_black_smoke.SetActive(false);
     }
 
     IEnumerator ExplosionRutine()
@@ -98,13 +104,16 @@ public class PlaneGame : MonoBehaviour
             yield return null;
         }
         ptc_exp.SetActive(false);
+        ptc_smoke.SetActive(false);
     }
 
     IEnumerator DissolveRutine()
     {
+        ptc_black_smoke.SetActive(true);
         float t = 0;
         float phase;
         Material matediss = GetComponent<Renderer>().material;
+        Material propdiss = prop.GetComponent<Renderer>().material;
         Color disscolor;
 
         while (t < dissolveDuration)
@@ -116,7 +125,12 @@ public class PlaneGame : MonoBehaviour
             disscolor = Color.Lerp(dissolveStartColor, dissolveEndColor, phase);
             matediss.SetColor("_Color", disscolor);
 
+            propdiss.SetFloat("_DissolveStrength", phase);
+            disscolor = Color.Lerp(dissolveStartColor, dissolveEndColor, phase);
+            propdiss.SetColor("_Color", disscolor);
+
             yield return null;
         }
+        ptc_black_smoke.SetActive(false);
     }
 }

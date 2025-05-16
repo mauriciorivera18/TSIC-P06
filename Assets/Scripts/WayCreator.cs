@@ -14,7 +14,7 @@ public class WayCreator : MonoBehaviour
     public Transform[] pointsArray;
     public bool offsetsApplied = false;
 
-    private void Start()
+    private void Update()
     {
         if (!offsetsApplied)
         {
@@ -38,11 +38,11 @@ public class WayCreator : MonoBehaviour
         }
 
         // Solo aplicar offset una vez
-        //if (!offsetsApplied)
-        //{
-        //    ApplyOffsetToPoints();
-        //    offsetsApplied = true;
-        //}
+        if (!offsetsApplied)
+        {
+           ApplyOffsetToPoints();
+            offsetsApplied = true;
+        }
 
         for (int i = 0; i < path_objs.Count; i++)
             {
